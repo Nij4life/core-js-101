@@ -28,10 +28,12 @@
  *
  */
 function getFizzBuzz(num) {
-  // eslint-disable-next-line no-nested-ternary
-  return (num % 3 === 0 && num % 5 === 0) ? 'FizzBuzz' : (num % 3 === 0) ? 'Fizz' : (num % 5 === 0) ? 'Buzz' : num;
-}
+  if (num % 3 === 0 && num % 5 === 0) return 'FizzBuzz';
+  if (num % 3 === 0) return 'Fizz';
+  if (num % 5 === 0) return 'Buzz';
 
+  return num;
+}
 
 /**
  * Returns the factorial of the specified integer n.
@@ -62,7 +64,11 @@ function getFactorial(n) {
  *   -1,1  =>  0  ( = -1 + 0 + 1 )
  */
 function getSumBetweenNumbers(n1, n2) {
-  return (n2 * (n2 + 1) - n1 * (n1 - 1)) / 2;
+  let res = 0;
+
+  for (let i = n1; i <= n2; i += 1) res += i;
+
+  return res;
 }
 
 
@@ -124,8 +130,9 @@ function isTriangle(a, b, c) {
  *   { top:20, left:20, width: 20, height: 20 }    =>  false
  *
  */
-function doRectanglesOverlap(/* rect1, rect2 */) {
-  throw new Error('Not implemented');
+function doRectanglesOverlap(rect1, rect2) {
+  if (rect1.left + rect1.width < rect2.left || rect1.top + rect1.height < rect2.top) return false;
+  return true;
 }
 
 
@@ -155,11 +162,8 @@ function doRectanglesOverlap(/* rect1, rect2 */) {
  *   { center: { x:0, y:0 }, radius:10 },  { x:10, y:10 }   => false
  *
  */
-function isInsideCircle(/* { center, radius }, point */) {
-  // const dx = point - center.x;
-  // const dy = point - center.y;
-  // return Math.Sqrt(dx * dx + dy * dy) <= radius;
-  throw new Error('Not implemented');
+function isInsideCircle({ center, radius }, point) {
+  return ((point.x - center.x) ** 2 + (point.y - center.y) ** 2) < (radius ** 2);
 }
 
 
@@ -174,10 +178,21 @@ function isInsideCircle(/* { center, radius }, point */) {
  *   'abracadabra'  => 'c'
  *   'entente' => null
  */
-function findFirstSingleChar(/* str */) {
-  // return Array.from(str).map((el, i, ar) => (el === ar.slice(i) )))
-  // });
-  throw new Error('Not implemented');
+function findFirstSingleChar(str) {
+  const arr = Array.from(str);
+  let res = null;
+  // eslint-disable-next-line consistent-return
+  for (let i = 0; i <= arr.length; i += 1) {
+    let count = 0;
+
+    arr.forEach((el) => { if (arr[i] === el) count += 1; });
+
+    if (count === 1) {
+      res = arr[i];
+      return res;
+    }
+  }
+  return null;
 }
 
 
@@ -281,8 +296,7 @@ function isCreditCardNumber(/* ccn */) {
  *   165536 (1+6+5+5+3+6 = 26,  2+6 = 8) => 8
  */
 function getDigitalRoot(num) {
-  // eslint-disable-next-line prefer-template
-  const res = (num + '').split('').reduce((init, next) => +init + +next);
+  const res = num.toString().split('').reduce((init, next) => +init + +next);
   return (res > 9) ? getDigitalRoot(res) : res;
 }
 
