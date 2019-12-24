@@ -67,8 +67,24 @@ function getPowerFunction(exponent) {
  *   getPolynom(8)     => y = 8
  *   getPolynom()      => null
  */
-function getPolynom() {
-  throw new Error('Not implemented');
+function getPolynom(...args) {
+  args.reverse();
+
+  return (x) => {
+    const result = args.reduce((acc, arg, i) => {
+      if (i === 0) {
+        // eslint-disable-next-line no-param-reassign
+        acc += arg;
+      } else {
+        // eslint-disable-next-line no-param-reassign
+        acc += arg * x ** i;
+      }
+
+      return acc;
+    }, 0);
+
+    return result || null;
+  };
 }
 
 
@@ -116,10 +132,19 @@ function memoize(func) {
  * }, 2);
  * retryer() => 2
  */
-function retry(/* func, attempts */) {
-  throw new Error('Not implemented');
-}
+function retry(func, attempts) {
+  return function repeater() {
+    for (let i = 0; i < attempts; i += 1) {
+      try {
+        func();
+      } catch (err) {
+        // E
+      }
+    }
 
+    return func();
+  };
+}
 
 /**
  * Returns the logging wrapper for the specified method,
@@ -145,13 +170,25 @@ function retry(/* func, attempts */) {
  *
  */
 function logger(func, logFunc) {
-  function x(arg) {
-    logFunc(`${func.name}(${arg}) starts`);
-    const res = func(arg);
-    logFunc(`${func.name}(${arg}) ends`);
+  return (...args) => {
+    let string = '';
+
+    args.forEach((arg, i) => {
+      if (arg instanceof Array) {
+        string += JSON.stringify(arg);
+      } else {
+        string += arg;
+      }
+
+      if (i !== args.length - 1) {
+        string += ',';
+      }
+    });
+    logFunc(`${func.name}(${string}) starts`);
+    const res = func(...args);
+    logFunc(`${func.name}(${string}) ends`);
     return res;
-  }
-  return x;
+  };
 }
 
 
